@@ -5,8 +5,10 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import UserSerializier
-from rest_framework.permissions import AllowAny
-
+from rest_framework.permissions import AllowAny,IsAdminUser
+from .models import User
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 # Create your views here.
 @api_view(['POST'])
 
@@ -21,3 +23,20 @@ def login(request):
         return Response(token.key)
     else:
         return Response('Invalid Credentials. ')
+    
+    
+@api_view(['POST'])  
+@ permission_classes(IsAdminUser) 
+def owner_create(request):
+    email = request.get.data('email')
+    password = request.get.data('password')
+    group = Group.objects.get(name = 'Owner')
+    serializier = UserSerializier(data = request.data)
+    if serializier.is_valid():
+        hash_password = make_password(password)
+        a = User.objects.create(email = email, password = password)
+        a.groups.add(group)
+        return Response('User created.')
+    else:
+        return Response(serializier.errors)    
+    
