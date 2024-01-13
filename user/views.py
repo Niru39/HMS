@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import GroupSerializer, UserSerializer
+from .serializers import UserSerializer, GroupSerializer
 from rest_framework.permissions import AllowAny,IsAdminUser, IsAuthenticated
 from .models import User
 from django.contrib.auth.hashers import make_password
