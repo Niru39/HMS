@@ -13,7 +13,7 @@ class RoomType(models.Model):
     
 class EmployeeInfo(models.Model):
     name = models.CharField(max_length = 300)
-    numder = models.IntegerField()
+    number = models.IntegerField()
     photo = models.ImageField( upload_to= 'employee_image')
     user = models.OneToOneField(User, on_delete = models.CASCADE, null = True)
     

@@ -4,8 +4,8 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import UserSerializier
-from rest_framework.permissions import AllowAny,IsAdminUser
+from .serializers import UserSerializier, GroupSerializier
+from rest_framework.permissions import AllowAny,IsAdminUser, IsAuthenticated
 from .models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
@@ -26,7 +26,7 @@ def login(request):
     
     
 @api_view(['POST'])  
-@ permission_classes(IsAdminUser) 
+@ permission_classes([IsAdminUser]) 
 def owner_create(request):
     email = request.get.data('email')
     password = request.get.data('password')
@@ -34,9 +34,19 @@ def owner_create(request):
     serializier = UserSerializier(data = request.data)
     if serializier.is_valid():
         hash_password = make_password(password)
-        a = User.objects.create(email = email, password = password)
+        a = User.objects.create(email = email, password = hash_password)
         a.groups.add(group)
         return Response('User created.')
     else:
         return Response(serializier.errors)    
+
+@api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+def grouplist(request):
+    group_objs = Group.objects.all()
+    # user = request.user
+    # group_objs = Group.objects.exclude(owner = user)
+    serializier = GroupSerializier(group_objs, many = True)
+    return Response (serializier.data)
+    
     
