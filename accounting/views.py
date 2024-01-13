@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from .models import Bill, Payment
 from rest_framework.response import Response
-from .serializers import BillSerializier, PaymentSerializier
+from .serializers import BillSerializer, PaymentSerializer
 from rest_framework.viewsets import ModelViewSet
 # Create your views here.
 
@@ -18,40 +18,40 @@ from rest_framework.viewsets import ModelViewSet
 
 class BillView(ModelViewSet):  # inherit
     queryset = Bill.objects.all()
-    serializer_class = BillSerializier
+    serializer_class = BillSerializer
 
     def list(self, request): # to get selective data from the bill eg: without null
         queryset = self.get_queryset() 
-        serializier = self.serializer_class(queryset, many = True) # querystele objects data nae dinxa
-        return Response(serializier.data)
+        serializer = self.serializer_class(queryset, many = True) # querystele objects data nae dinxa
+        return Response(serializer.data)
     
     def create(self, request):
-        serializier = self.serializer_class(data = request.data) # datale jsondata lai object data ma change garxa
-        if serializier.is_valid():
-            serializier.save()
-            return Response(serializier.data)
+        serializer = self.serializer_class(data = request.data) # datale jsondata lai object data ma change garxa
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         else:
-            return Response(serializier.errors)
+            return Response(serializer.errors)
         
     def retrieve(self, request , pk = None):
         try:
             queryset = Bill.objects.get(id = pk) # to retrieve only one value
         except:
             return Response({'error':'Not Found'})
-        serializier = self.serializer_class(queryset)
-        return Response(serializier.data)
+        serializer = self.serializer_class(queryset)
+        return Response(serializer.data)
     
     def update(self, request, pk = None):
         try:
             queryset = Bill.objects.get(id = pk) 
         except:
             return Response({'error':'Not Found'})
-        serializier = self.serializer_class(queryset, data = request.data)
-        if serializier.is_valid():
-            serializier.save()
-            return Response(serializier.data)
+        serializer = self.serializer_class(queryset, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
         else:
-            return Response(serializier.errors)
+            return Response(serializer.errors)
         
     def destroy(self, request, pk = None):
         try:
@@ -64,4 +64,4 @@ class BillView(ModelViewSet):  # inherit
     
 class PaymentView(ModelViewSet):  # inherit
     queryset = Payment.objects.all()
-    serializer_class = PaymentSerializier
+    serializer_class = PaymentSerializer
